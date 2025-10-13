@@ -1,7 +1,7 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <esp_now.h>
-// Import wifi ssid, wifi password, mqtt server ip and mqtt port
+// Import wifi ssid, wifi password, mqtt server ip and mqtt server port
 #include "secrets.h"
 
 // ===== CONFIG =====y
