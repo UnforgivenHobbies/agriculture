@@ -1,3 +1,6 @@
 # Ignore macOS Finder files
 .DS_Store
 **/.DS_Store
+# Ignore secrets.h file
+secrets.h
+
