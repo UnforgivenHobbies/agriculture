@@ -1,13 +1,10 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <esp_now.h>
+// Import wifi ssid, wifi password, mqtt server ip and mqtt port
+#include "secrets.h"
 
-// ===== CONFIG =====
-const char* ssid = "Sociality.gr";
-const char* password = "valekatiaplo";
-const char* mqttServer = "192.168.1.30";
-const int mqttPort = 1883;
-
+// ===== CONFIG =====y
 WiFiClient espClient;
 PubSubClient client(espClient);
 
