@@ -2,5 +2,5 @@
 .DS_Store
 **/.DS_Store
 # Ignore secrets.h file
-#secrets.h
+secrets.h
 
