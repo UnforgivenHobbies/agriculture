@@ -2,4 +2,4 @@
 .DS_Store
 **/.DS_Store
 # Ignore secrets.h file
-receiver_sketch/secrets.h
+receiver_sketch/credentials.h

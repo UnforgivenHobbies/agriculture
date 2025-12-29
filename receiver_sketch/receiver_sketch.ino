@@ -2,7 +2,7 @@
 #include <PubSubClient.h>
 #include <esp_now.h>
 // Import wifi ssid, wifi password, mqtt server ip and mqtt server port
-#include "secrets.h"
+#include "credentials.h"
 
 // ===== CONFIG =====y
 WiFiClient espClient;
@@ -31,6 +31,9 @@ void connectToWiFi() {
   Serial.println("\nWiFi connected");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+  Serial.print("WiFi channel: ");
+  Serial.println(WiFi.channel());
+
 }
 
 void connectToMQTT() {
