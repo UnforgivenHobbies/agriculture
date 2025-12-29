@@ -29,6 +29,8 @@ void connectToWiFi() {
     Serial.print(".");
   }
   Serial.println("\nWiFi connected");
+  Serial.print("STA MAC: ");
+  Serial.println(WiFi.macAddress());
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
   Serial.print("WiFi channel: ");
