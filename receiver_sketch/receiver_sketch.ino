@@ -1,10 +1,9 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <esp_now.h>
-// Import wifi ssid, wifi password, mqtt server ip and mqtt server port
 #include "credentials.h"
 
-// ===== CONFIG =====y
+// ===== CONFIG =====
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -22,6 +21,11 @@ struct_message incomingData;
 void connectToWiFi() {
   if (WiFi.status() == WL_CONNECTED) return;
 
+  Serial.println("=== Credentials ===");
+  Serial.print("SSID: ");     Serial.println(ssid);
+  Serial.print("Password: "); Serial.println(password);
+  Serial.println("===================");
+
   Serial.print("Connecting to WiFi");
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -29,18 +33,13 @@ void connectToWiFi() {
     Serial.print(".");
   }
   Serial.println("\nWiFi connected");
-  Serial.print("STA MAC: ");
-  Serial.println(WiFi.macAddress());
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-  Serial.print("WiFi channel: ");
-  Serial.println(WiFi.channel());
-
+  Serial.print("STA MAC: ");    Serial.println(WiFi.macAddress());
+  Serial.print("IP address: "); Serial.println(WiFi.localIP());
+  Serial.print("WiFi channel: "); Serial.println(WiFi.channel());
 }
 
 void connectToMQTT() {
   if (client.connected()) return;
-
   if (WiFi.status() != WL_CONNECTED) connectToWiFi();
 
   Serial.println("Connecting to MQTT...");
@@ -69,7 +68,7 @@ void OnDataRecv(const esp_now_recv_info_t *info, const uint8_t *data, int len) {
 
   Serial.println("--- ESP-NOW Data ---");
   Serial.printf("ID: %d\n", incomingData.id);
-  Serial.printf("Temp: %.2f °C\n", incomingData.temperature);
+  Serial.printf("Temp: %.2f C\n", incomingData.temperature);
   Serial.printf("Hum: %.2f %%\n", incomingData.humidity);
   Serial.printf("Battery: %d %%\n", incomingData.batteryPercent);
 
@@ -83,27 +82,30 @@ void OnDataRecv(const esp_now_recv_info_t *info, const uint8_t *data, int len) {
     client.publish("garden/sensor1", payload.c_str());
     Serial.println("Published to MQTT: " + payload);
   } else {
-    Serial.println("MQTT not connected");
+    Serial.println("MQTT not connected, skipping publish");
   }
 }
 
 // ===== SETUP =====
 void setup() {
   Serial.begin(115200);
-  delay(500);
+  delay(1000); // give Serial time to initialize
+
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
 
   connectToWiFi();
   client.setServer(mqttServer, mqttPort);
   client.setCallback(callback);
   connectToMQTT();
 
-  WiFi.mode(WIFI_STA);
   if (esp_now_init() != ESP_OK) {
     Serial.println("Error initializing ESP-NOW");
     while (true) delay(1000);
   }
 
   esp_now_register_recv_cb(OnDataRecv);
+  Serial.println("ESP-NOW initialized, waiting for data...");
 }
 
 // ===== LOOP =====
