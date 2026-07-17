@@ -47,7 +47,7 @@ int readBatteryPercentage(float &batteryVolts) {
 // ==== SETUP ====
 void setup() {
   Serial.begin(115200);
-  delay(500);
+  delay(2000);
 
   analogReadResolution(12);
   Wire.begin(I2C_SDA, I2C_SCL);
@@ -56,15 +56,17 @@ void setup() {
   // Wi-Fi station mode
   WiFi.mode(WIFI_STA);
 
-  // Long-range ESP-NOW (sender only)
-  esp_wifi_set_protocol(WIFI_IF_STA, WIFI_PROTOCOL_LR);
-  esp_wifi_set_max_tx_power(78);
-
   if (esp_now_init() != ESP_OK) {
     Serial.println("ESP-NOW init failed");
     while (true) delay(1000);
   }
 
+  uint8_t primaryChan;
+  wifi_second_chan_t secondChan;
+  esp_wifi_get_channel(&primaryChan, &secondChan);
+  Serial.print("Sender is on channel: ");
+  Serial.println(primaryChan);
+  
   // Log send status
   esp_now_register_send_cb([](const esp_now_send_info_t *info, esp_now_send_status_t status){
     Serial.print("ESP-NOW send status: ");
